@@ -1,18 +1,24 @@
-// server.js
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const express = require('express');
+const cors = require('cors');
 
-const server = http.createServer((req, res) => {
-    if (req.url === '/') {
-        serveHTML('login1.html', res);
-    } else if (req.url === '/login2') {
-        serveHTML('login2.html', res);
-    } else {
-        // Handle other requests (if any)
-        res.writeHead(404, { 'Content-Type': 'text/plain' });
-        res.end('Not Found');
-    }
+const app = express();
+
+// Serve HTML files
+app.get('/', (req, res) => {
+    serveHTML('login1.html', res);
+});
+
+app.get('/login2', (req, res) => {
+    serveHTML('login2.html', res);
+});
+
+// Additional route for API
+app.get('/', (req, res) => {
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.send('API is running..');
 });
 
 function serveHTML(fileName, res) {
@@ -31,13 +37,6 @@ function serveHTML(fileName, res) {
 
 const PORT = process.env.PORT || 3000;
 
-server.listen(PORT, () => {
+app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}/`);
-});
-
-
-app.use(cors());
-app.get("/", (req, res) => {
-	res.setHeader("Access-Control-Allow-Credentials","true");
-	res.send("API is running.. ");
 });
